@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Fiqh — Style Kahoot (en ligne)</title>
+  <style>
+    :root{
+      --pri:#5b6ee1; --pri2:#7a4aa6;
+      --bg:linear-gradient(135deg,var(--pri) 0%, var(--pri2) 100%);
+      --card:linear-gradient(135deg,#f6f8fb 0%, #cbd6ea 100%);
+      --r:26px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:#111;
+      padding:20px;
+    }
+    .app{
+      width:100%;
+      max-width:1100px;
+      background:rgba(255,255,255,.96);
+      border-radius:var(--r);
+      box-shadow:0 20px 60px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+    header{
+      padding:18px 22px;
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+    .header-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .title{
+      font-weight:800;
+      color:var(--pri);
+      font-size:clamp(20px,3vw,32px);
+    }
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+    .btn{
+      border:0;
+      border-radius:999px;
+      padding:8px 14px;
+      background:linear-gradient(135deg,#eef0ff,#ece7ff);
+      cursor:pointer;
+      font-weight:600;
+      box-shadow:0 6px 14px rgba(0,0,0,.08);
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .btn.primary{
+      background:linear-gradient(135deg,var(--pri),var(--pri2));
+      color:#fff;
+      box-shadow:0 10px 22px rgba(91,110,225,.45);
+    }
+    .btn.small{
+      padding:6px 10px;
+      font-size:12px;
+    }
+    .btn[disabled]{
+      opacity:.6;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.35rem;
+      background:#fff;
+      border-radius:999px;
+      padding:6px 10px;
+      color:#pri;
+      font-weight:700;
+      font-size:12px;
+    }
+    .mode-indicator{
+      font-size:12px;
+      font-weight:600;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#fff;
+      color:#444;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+    }
+    .mode-edit{
+      color:#b65b00;
+      background:#ffe9cf;
+    }
+    main{
+      padding:20px 22px 22px;
+    }
+    .progress{
+      height:8px;
+      background:#e7e7e7;
+      border-radius:999px;
+      overflow:hidden;
+      margin-bottom:16px;
+    }
+    .progress .fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--pri),var(--pri2));
+      transition:width .35s ease;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--r);
+      padding:22px 20px 24px;
+      box-shadow:0 12px 30px rgba(0,0,0,.12);
+      position:relative;
+    }
+    .badge{
+      position:absolute;
+      top:12px;
+      left:12px;
+      background:var(--pri);
+      color:#fff;
+      font-weight:800;
+      border-radius:999px;
+      padding:5px 10px;
+      font-size:12px;
+    }
+    .question-text{
+      font-size:clamp(18px,2.2vw,24px);
+      line-height:1.5;
+      margin-bottom:14px;
+      padding-left:22px;
+      position:relative;
+    }
+    .question-text::before{
+      content:"\201C";
+      position:absolute;
+      left:0;
+      top:-6px;
+      font-size:36px;
+      line-height:0;
+      color:var(--pri);
+      opacity:.25;
+    }
+    .answers{
+      display:grid;
+      gap:10px;
+      margin-top:4px;
+    }
+    .answer{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      background:#fff;
+      border-radius:14px;
+      padding:10px 12px;
+      box-shadow:0 6px 16px rgba(0,0,0,.06);
+      cursor:pointer;
+      border:2px solid transparent;
+      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
+      touch-action:manipulation;
+      position:relative;
+    }
+    .answer:hover{
+      transform:translateY(-1px);
+      box-shadow:0 8px 18px rgba(0,0,0,.08);
+    }
+    .answer.disabled{
+      cursor:default;
+      opacity:.96;
+      transform:none;
+      box-shadow:0 6px 16px rgba(0,0,0,.06);
+    }
+    .chip{
+      flex:0 0 30px;
+      height:30px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--pri),var(--pri2));
+      color:#fff;
+      font-weight:800;
+      font-size:13px;
+    }
+    .answer-text{
+      flex:1;
+      font-size:15px;
+    }
+    .answer.correct-play{
+      background:#d9f7d9;
+      border-color:#2e9b3b;
+    }
+    .answer.wrong-play{
+      background:#ffe1e1;
+      border-color:#d44343;
+    }
+    .answer.correct-config::after{
+      content:"Bonne réponse (config)";
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:11px;
+      font-weight:700;
+      color:#2e7d32;
+      background:#e4f7e4;
+      border-radius:999px;
+      padding:2px 8px;
+    }
+    .feedback{
+      margin-top:12px;
+      font-weight:600;
+      font-size:14px;
+      min-height:18px;
+    }
+    .feedback.ok{color:#2e7d32;}
+    .feedback.ko{color:#c62828;}
+    .hint{
+      margin-top:6px;
+      font-size:11px;
+      color:#555;
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:18px;
+    }
+    dialog{
+      border:0;
+      border-radius:14px;
+      max-width:min(92vw,420px);
+      width:100%;
+      padding:0;
+      box-shadow:0 20px 50px rgba(0,0,0,.4);
+    }
+    .dialog-body{
+      padding:18px 18px 16px;
+      text-align:center;
+    }
+    .qr-box{
+      margin:10px auto;
+      padding:10px;
+      background:#fff;
+      border-radius:14px;
+      display:inline-block;
+      box-shadow:0 8px 20px rgba(0,0,0,.12);
+    }
+    .qr-box img{
+      max-width:100%;
+      height:auto;
+      border-radius:10px;
+    }
+    .small-text{
+      font-size:12px;
+      color:#444;
+      margin-top:4px;
+    }
+    .warn-local{
+      margin-top:8px;
+      font-size:11px;
+      color:#a13c00;
+      background:#ffe8d8;
+      padding:6px 10px;
+      border-radius:10px;
+    }
+    @media (max-width:650px){
+      header{padding:16px;}
+      main{padding:16px;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="app" role="application" aria-label="Quiz Fiqh — style Kahoot">
+  <header>
+    <div class="header-top">
+      <div class="title">Quiz Fiqh — Maam Neena</div>
+      <div class="mode-indicator" id="modeIndicator">
+        Mode : <span id="modeLabel">Quiz (joueurs)</span>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn primary small" id="btnMode">
+        🔁 Basculer mode (quiz / config)
+      </button>
+      <button class="btn small" id="btn-qr">
+        📱 QR code participants
+      </button>
+      <button class="btn small" id="btn-edit-json">
+        ✎ Modifier JSON complet
+      </button>
+      <button class="btn small" id="btn-export">
+        ⤓ Exporter le quiz
+      </button>
+      <button class="btn small" id="btn-shuffle">
+        🔀 Mélanger les questions
+      </button>
+      <span class="pill">
+        Question <span id="pos">1</span>/<span id="tot">12</span>
+      </span>
+    </div>
+    <div style="margin-top:6px;font-size:11px;color:#444;" id="infoOnline">
+      📌 <strong>Comme Kahoot :</strong> ouvre ce quiz depuis un lien <code>https://...</code>, puis affiche le QR code.  
+      Les élèves scannent et rejoignent la même page sur leur téléphone.
+    </div>
+    <div class="warn-local" id="warnLocal" style="display:none;">
+      ⚠️ Tu ouvres ce fichier depuis ton appareil (<code>file:///</code>).  
+      Le QR code ne peut pas fonctionner ainsi.  
+      Pour un vrai mode “Kahoot”, mets ce fichier sur un site (par exemple via un ami / technique) pour avoir une adresse en <code>https://...</code>, puis rouvre-le.
+    </div>
+  </header>
+
+  <main>
+    <div class="progress"><div id="prog" class="fill"></div></div>
+    <div id="screen"></div>
+    <div class="controls">
+      <button class="btn" id="prev">← Précédent</button>
+      <button class="btn primary" id="next">Question suivante →</button>
+    </div>
+  </main>
+</div>
+
+<!-- Dialog QR -->
+<dialog id="qrDialog">
+  <div class="dialog-body">
+    <h3 style="color:var(--pri);margin-bottom:4px;">QR code participants</h3>
+    <p style="font-size:13px;margin-bottom:8px;" id="qrText">
+      Demande aux élèves de scanner ce QR code avec leur téléphone.<br>
+      Ils ouvriront exactement ce quiz.
+    </p>
+    <div class="qr-box" id="qrBox">
+      <img id="qrImg" alt="QR code vers ce quiz">
+    </div>
+    <div class="small-text" id="qrSmall">
+      Si le QR ne charge pas, partage simplement le lien de la page.
+    </div>
+    <div style="margin-top:10px;">
+      <button class="btn primary small" onclick="document.getElementById('qrDialog').close()">Fermer</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Dialog JSON Editor -->
+<dialog id="editor">
+  <div class="dialog-body" style="text-align:left;">
+    <h3 style="color:var(--pri);margin-bottom:6px;">Modifier le quiz (JSON avancé)</h3>
+    <p style="font-size:12px;margin-bottom:6px;">
+      Tu peux tout modifier ici (questions, réponses, index de la bonne réponse).
+    </p>
+    <pre style="background:#f5f5f7;padding:8px;border-radius:8px;font-size:11px;overflow:auto;margin-bottom:8px;">{
+  "text": "Question…",
+  "answers": ["Réponse 1","Réponse 2"],
+  "correct": 0  ← indice de la bonne réponse (0 = 1ère, 1 = 2ème, etc.)
+}</pre>
+    <textarea id="editorArea" style="width:100%;min-height:220px;border:1px solid #ddd;border-radius:10px;padding:8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end;">
+      <button class="btn small" onclick="document.getElementById('editor').close()">Annuler</button>
+      <button class="btn primary small" id="saveEd">Enregistrer</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+// ========================
+//  Données du quiz
+// ========================
+
+const LS_KEY = "fiqh-quiz-kahoot-v2";
+
+let defaultQuiz = [
+  {
+    text: "Celui qui a oublié le qunût dans la prière du matin…",
+    answers: [
+      "Sajada ba‘da as-salâm",
+      "Sajada qabla as-salâm",
+      "Ṣalâtuhu ṣaḥîḥa"
+    ],
+    correct: 0
+  },
+  {
+    text: "Quel est le jugement de celui qui a ajouté dans la prière quelque chose équivalent…",
+    answers: [
+      "Ṣaḥḥat ṣalâtuhu",
+      "Baṭulat ṣalâtuhu",
+      "Sajada ba‘da as-salâm",
+      "Sajada qabla as-salâm"
+    ],
+    correct: 0
+  },
+  {
+    text: "J’ai récité à voix haute dans la prière de l’ʿAṣr…",
+    answers: [
+      "Sajadtu qabla as-salām",
+      "Sajadtu baʿda as-salām",
+      "Lā sujûda ʿalayhi",
+      "Ṣalātī ṣaḥīḥa"
+    ],
+    correct: 0
+  },
+  {
+    text: "La prosternation de l’oubli dans la prière a lieu lorsqu’on délaisse…",
+    answers: [
+      "Thalātha sunan",
+      "Sunnah wāḥidah",
+      "Sunnatayn",
+      "Arba‘a sunan"
+    ],
+    correct: 0
+  },
+  {
+    text: "J’étais en prière et j’ai entendu la mention du Prophète Muḥammad (ﷺ), alors j’ai prononcé la prière sur lui…",
+    answers: [
+      "Sajadtu baʿda as-salām",
+      "Kuriḥat wa-lākin ṣaḥḥat ṣalātī",
+      "Baṭulat ṣalātī",
+      "Lā sujûda ʿalayya"
+    ],
+    correct: 0
+  },
+  {
+    text: "Quel est le jugement de celui qui s’est levé pour la deuxième rakʿa puis s’en est souvenu avant que son corps ne quitte le sol…",
+    answers: [
+      "Yarjiʿu ilā al-julūs",
+      "Yasjudu baʿda as-salām",
+      "Lā yasjudu"
+    ],
+    correct: 0
+  },
+  {
+    text: "Celui qui a oublié la prosternation avant le salut jusqu’à ce qu’il soit sorti de la mosquée…",
+    answers: [
+      "Fa-ṣalātuhu ṣaḥîḥa",
+      "Baṭulat ṣalātuhu",
+      "Aʿāda aṣ-ṣalāh"
+    ],
+    correct: 0
+  },
+  {
+    text: "Celui qui a oublié de réciter la sourate ou un verset après la Fātiḥa…",
+    answers: [
+      "Sajada baʿda as-salām",
+      "Sajada qabla as-salām"
+    ],
+    correct: 0
+  },
+  {
+    text: "Celui qui écoute quelqu’un parler un petit moment, sa prière est annulée…",
+    answers: [
+      "Ṣaḥīḥ",
+      "Khaṭa’"
+    ],
+    correct: 0
+  },
+  {
+    text: "Quel est le jugement de celui qui s’est assoupi pendant la prière…",
+    answers: [
+      "Ṣalātuhu ṣaḥîḥa",
+      "Yasjudu qabla as-salām"
+    ],
+    correct: 0
+  },
+  {
+    text: "Celui qui doute d’un état d’impureté ou de souillure sans être certain qu’un événement impur l’a touché…",
+    answers: [
+      "Aʿāda aṣ-ṣalāh wa-l-wuḍū’ maʿan",
+      "Ṣalâtuhu ṣaḥîḥa"
+    ],
+    correct: 0
+  },
+  {
+    text: "Et s’il est certain qu’il est en état de pureté…",
+    answers: [
+      "Fa-ṣalātuhu ṣaḥīḥa wa-lā shay’a ʿalayhi",
+      "Aʿāda aṣ-ṣalāh wa-l-wuḍū’ maʿan"
+    ],
+    correct: 0
+  }
+];
+
+let stored = null;
+try {
+  const raw = localStorage.getItem(LS_KEY);
+  if(raw){
+    stored = JSON.parse(raw);
+  }
+} catch(e){
+  stored = null;
+}
+
+let quiz = Array.isArray(stored) ? stored : defaultQuiz.slice();
+
+// ========================
+//  État & éléments UI
+// ========================
+let idx = 0;
+let hasAnswered = false;
+let mode = "play"; // "play" ou "config"
+
+const screen = document.getElementById("screen");
+const posEl = document.getElementById("pos");
+const totEl = document.getElementById("tot");
+const prog = document.getElementById("prog");
+const btnPrev = document.getElementById("prev");
+const btnNext = document.getElementById("next");
+const btnMode = document.getElementById("btnMode");
+const modeIndicator = document.getElementById("modeIndicator");
+const modeLabel = document.getElementById("modeLabel");
+const qrDialog = document.getElementById("qrDialog");
+const qrImg = document.getElementById("qrImg");
+const qrText = document.getElementById("qrText");
+const qrSmall = document.getElementById("qrSmall");
+const qrBox = document.getElementById("qrBox");
+const editorDialog = document.getElementById("editor");
+const editorArea = document.getElementById("editorArea");
+const btnEditJson = document.getElementById("btn-edit-json");
+const btnQr = document.getElementById("btn-qr");
+const warnLocal = document.getElementById("warnLocal");
+const infoOnline = document.getElementById("infoOnline");
+
+totEl.textContent = quiz.length;
+
+function isLocalFile(){
+  return window.location.protocol === "file:";
+}
+
+function saveQuiz(){
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify(quiz));
+  }catch(e){
+    console.warn("Impossible d'enregistrer dans localStorage", e);
+  }
+}
+
+function updateModeUI(){
+  if(mode === "play"){
+    modeLabel.textContent = "Quiz (joueurs)";
+    modeIndicator.classList.remove("mode-edit");
+  }else{
+    modeLabel.textContent = "Configuration (enseignant)";
+    modeIndicator.classList.add("mode-edit");
+  }
+  render();
+}
+
+function render(){
+  if(!quiz.length){
+    screen.innerHTML = "<p>Aucune question définie.</p>";
+    return;
+  }
+  const q = quiz[idx];
+  posEl.textContent = idx + 1;
+  totEl.textContent = quiz.length;
+  prog.style.width = ((idx+1)/quiz.length*100) + "%";
+
+  const answersHtml = q.answers.map((a,i)=>`
+    <div class="answer" data-index="${i}">
+      <div class="chip">${i+1}</div>
+      <div class="answer-text">${a}</div>
+    </div>
+  `).join("");
+
+  screen.innerHTML = `
+    <section class="card">
+      <span class="badge">#${idx+1}</span>
+      <div class="question-text">${q.text}</div>
+      <div class="answers">
+        ${answersHtml}
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="hint" id="hint"></div>
+    </section>
+  `;
+
+  const answersEls = screen.querySelectorAll(".answer");
+  const feedback = document.getElementById("feedback");
+  const hint = document.getElementById("hint");
+
+  hasAnswered = false;
+  btnPrev.disabled = (idx === 0);
+  btnNext.textContent = (idx === quiz.length-1) ? "Dernière question" : "Question suivante →";
+
+  if(mode === "config"){
+    hint.textContent = "Tape sur la bonne réponse pour l'enregistrer. Elle sera affichée en vert en mode quiz.";
+    feedback.textContent = "";
+    answersEls.forEach((el, i)=>{
+      el.classList.remove("disabled","correct-play","wrong-play");
+      if(i === q.correct){
+        el.classList.add("correct-config");
+      }
+      el.onclick = ()=>{
+        q.correct = i;
+        saveQuiz();
+        render();
+      };
+    });
+  }else{
+    hint.textContent = "Choisis ta réponse. Une seule tentative 😉";
+    answersEls.forEach((el,i)=>{
+      el.onclick = ()=>{
+        handleAnswerClick(i);
+      };
+    });
+  }
+}
+
+function handleAnswerClick(i){
+  if(mode !== "play") return;
+  if(hasAnswered) return;
+  hasAnswered = true;
+
+  const q = quiz[idx];
+  const answersEls = screen.querySelectorAll(".answer");
+  const feedback = document.getElementById("feedback");
+
+  answersEls.forEach((el, idxAns)=>{
+    el.classList.add("disabled");
+    el.classList.remove("correct-config");
+    if(idxAns === q.correct){
+      el.classList.add("correct-play");
+    }
+    if(idxAns === i && idxAns !== q.correct){
+      el.classList.add("wrong-play");
+    }
+  });
+
+  if(i === q.correct){
+    feedback.textContent = "✅ Bonne réponse !";
+    feedback.className = "feedback ok";
+  }else{
+    const bonne = q.answers[q.correct] ?? "";
+    feedback.textContent = "❌ Mauvaise réponse. Bonne réponse : " + bonne;
+    feedback.className = "feedback ko";
+  }
+}
+
+// Navigation
+btnNext.addEventListener("click", ()=>{
+  if(idx < quiz.length-1){
+    idx++;
+    render();
+  }
+});
+btnPrev.addEventListener("click", ()=>{
+  if(idx > 0){
+    idx--;
+    render();
+  }
+});
+
+// Mode toggle
+btnMode.addEventListener("click", ()=>{
+  mode = (mode === "play") ? "config" : "play";
+  updateModeUI();
+});
+
+// Shuffle
+document.getElementById("btn-shuffle").addEventListener("click", ()=>{
+  for(let k = quiz.length-1; k>0; k--){
+    const r = Math.floor(Math.random()*(k+1));
+    [quiz[k], quiz[r]] = [quiz[r], quiz[k]];
+  }
+  idx = 0;
+  saveQuiz();
+  render();
+});
+
+// QR code dialog
+btnQr.addEventListener("click", ()=>{
+  if(isLocalFile()){
+    qrBox.style.display = "none";
+    qrSmall.textContent = "Ce fichier est ouvert en local (file:///). Le QR ne peut pas être utilisé ainsi. Mets ce quiz sur un site (https://...) et rouvre-le pour générer un vrai QR partageable.";
+    qrText.textContent = "Pour utiliser le QR code comme Kahoot, ce quiz doit être en ligne (avec une adresse en https://...).";
+  }else{
+    const url = window.location.href;
+    const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=" + encodeURIComponent(url);
+    qrImg.src = qrUrl;
+    qrBox.style.display = "inline-block";
+    qrText.textContent = "Demande aux élèves de scanner ce QR code avec leur téléphone.";
+    qrSmall.textContent = "Ils ouvriront exactement cette page de quiz.";
+  }
+  qrDialog.showModal();
+});
+
+// JSON editor
+btnEditJson.addEventListener("click", ()=>{
+  editorArea.value = JSON.stringify(quiz, null, 2);
+  editorDialog.showModal();
+});
+
+document.getElementById("saveEd").addEventListener("click", ()=>{
+  try{
+    const data = JSON.parse(editorArea.value);
+    if(!Array.isArray(data)) throw new Error("Le JSON doit être un tableau de questions.");
+    quiz = data;
+    idx = 0;
+    saveQuiz();
+    editorDialog.close();
+    render();
+  }catch(err){
+    alert("Erreur JSON : " + err.message);
+  }
+});
+
+// Export JSON
+document.getElementById("btn-export").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(quiz, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quiz-fiqh-kahoot.json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Raccourcis clavier pour l'animateur
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "ArrowRight") btnNext.click();
+  if(e.key === "ArrowLeft") btnPrev.click();
+});
+
+// Init : message selon local / en ligne
+if(isLocalFile()){
+  warnLocal.style.display = "block";
+  infoOnline.style.display = "none";
+}else{
+  warnLocal.style.display = "none";
+  infoOnline.style.display = "block";
+}
+
+updateModeUI();
+</script>
+
+</body>
+</html>
